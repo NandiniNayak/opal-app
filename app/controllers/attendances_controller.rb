@@ -8,7 +8,7 @@ class AttendancesController < ApplicationController
     # profile.card.attendances
     # @profile = Profile.find(params[:profile_id])
     # @attendances = @profile.card.attendances
-    Attendance.all
+    @attendances= Attendance.all
   end
 
   # GET /attendances/1
