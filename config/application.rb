@@ -29,5 +29,7 @@ module OpalApp
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+    # clear x-frame options
+    config.action_dispatch.default_headers.clear
   end
 end
