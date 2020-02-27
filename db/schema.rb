@@ -10,15 +10,44 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_16_050409) do
+ActiveRecord::Schema.define(version: 2020_02_27_002854) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "attendances", force: :cascade do |t|
-    t.string "opal_number"
+    t.date "date"
+    t.time "checkin"
+    t.time "checkout"
+    t.string "status"
+    t.integer "grade"
+    t.bigint "card_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["card_id"], name: "index_attendances_on_card_id"
+  end
+
+  create_table "cards", force: :cascade do |t|
+    t.string "card_number"
+    t.bigint "profile_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["profile_id"], name: "index_cards_on_profile_id"
+  end
+
+  create_table "courses", force: :cascade do |t|
+    t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
+  create_table "profiles", force: :cascade do |t|
+    t.jsonb "user"
+    t.string "role"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_foreign_key "attendances", "cards"
+  add_foreign_key "cards", "profiles"
 end

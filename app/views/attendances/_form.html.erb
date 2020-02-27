@@ -12,8 +12,33 @@
   <% end %>
 
   <div class="field">
-    <%= form.label :opal_number %>
-    <%= form.text_field :opal_number %>
+    <%= form.label :date %>
+    <%= form.date_select :date %>
+  </div>
+
+  <div class="field">
+    <%= form.label :checkin %>
+    <%= form.time_select :checkin %>
+  </div>
+
+  <div class="field">
+    <%= form.label :checkout %>
+    <%= form.time_select :checkout %>
+  </div>
+
+  <div class="field">
+    <%= form.label :status %>
+    <%= form.text_field :status %>
+  </div>
+
+  <div class="field">
+    <%= form.label :grade %>
+    <%= form.number_field :grade %>
+  </div>
+
+  <div class="field">
+    <%= form.label :card_id %>
+    <%= form.text_field :card_id %>
   </div>
 
   <div class="actions">

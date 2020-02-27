@@ -1,8 +1,33 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <strong>Opal number:</strong>
-  <%= @attendance.opal_number %>
+  <strong>Date:</strong>
+  <%= @attendance.date %>
+</p>
+
+<p>
+  <strong>Checkin:</strong>
+  <%= @attendance.checkin %>
+</p>
+
+<p>
+  <strong>Checkout:</strong>
+  <%= @attendance.checkout %>
+</p>
+
+<p>
+  <strong>Status:</strong>
+  <%= @attendance.status %>
+</p>
+
+<p>
+  <strong>Grade:</strong>
+  <%= @attendance.grade %>
+</p>
+
+<p>
+  <strong>Card:</strong>
+  <%= @attendance.card %>
 </p>
 
 <%= link_to 'Edit', edit_attendance_path(@attendance) %> |
