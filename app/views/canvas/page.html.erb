@@ -23,9 +23,9 @@
   <tbody>
     <% @profiles.each do |profile| %>
       <tr>
-        <td><%= link_to profile.user["name"], attendances_path %></td>
+        <td><%= link_to profile.user["name"], attendances_path(:profile_id => profile.id) %></td>
         <td><%= profile.role %></td>
-        <td><%= link_to 'Register Card Number', new_card_path %></td>
+        <td><%= link_to 'Register Card Number', new_card_path(:profile_id => profile.id) %></td>
       </tr>
     <% end %>
   </tbody>

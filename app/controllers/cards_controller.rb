@@ -15,6 +15,7 @@ class CardsController < ApplicationController
   # GET /cards/new
   def new
     @card = Card.new
+    @profile_id = params[:profile_id]
   end
 
   # GET /cards/1/edit
@@ -25,7 +26,7 @@ class CardsController < ApplicationController
   # POST /cards.json
   def create
     @card = Card.new(card_params)
-
+    puts "======CARD PARAMS #{card_params}"
     respond_to do |format|
       if @card.save
         format.html { redirect_to @card, notice: 'Card was successfully created.' }

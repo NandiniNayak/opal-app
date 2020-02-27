@@ -4,7 +4,10 @@ class AttendancesController < ApplicationController
   # GET /attendances
   # GET /attendances.json
   def index
-    @attendances = Attendance.all
+    # show the attendance of each user
+    # profile.card.attendances
+    @profile = Profile.find(params[:profile_id])
+    @attendances = @profile.card.attendances
   end
 
   # GET /attendances/1
