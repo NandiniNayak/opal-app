@@ -16,19 +16,22 @@
   </thead>
 
   <tbody>
-    <% @attendances.each do |attendance| %>
-      <tr>
-        <td><%= attendance.date.strftime("%d,%b-%Y")  if attendance.date %></td>
-        <td><%= attendance.chekin.strftime("%I:%M %P") if attendance.chekin %></td>
-        <td><%= attendance.checkout %></td>
-        <td><%= attendance.status %></td>
-        <td><%= attendance.grade %></td>
-        <td><%= attendance.card_opal_number %></td>
-        <td><%= link_to 'Show', attendance %></td>
-        <td><%= link_to 'Edit', edit_attendance_path(attendance) %></td>
-        <td><%= link_to 'Destroy', attendance, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
+   <% if @attendances %>
+      <% @attendances.each do |attendance| %>
+        <tr>
+          <td><%= attendance.date.strftime("%d,%b-%Y")  if attendance.date %></td>
+          <td><%= attendance.chekin.strftime("%I:%M %P") if attendance.chekin %></td>
+          <td><%= attendance.checkout %></td>
+          <td><%= attendance.status %></td>
+          <td><%= attendance.grade %></td>
+          <td><%= attendance.card_opal_number %></td>
+          <td><%= link_to 'Show', attendance %></td>
+          <td><%= link_to 'Edit', edit_attendance_path(attendance) %></td>
+          <td><%= link_to 'Destroy', attendance, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        </tr>
+      <% end %>
+    <% else %>
+    <p> No attendance logged by the card yet, tap the card or ask your educator or student services to register your card</p>
   </tbody>
 </table>
 

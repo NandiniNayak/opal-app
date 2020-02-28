@@ -6,9 +6,13 @@ class AttendancesController < ApplicationController
   def index
     # UNCOMMENT THIS CODE after hardware test: show the attendance of each user
     # profile.card.attendances
-    # @profile = Profile.find(params[:profile_id])
-    # @attendances = @profile.card.attendances
-    @attendances= Attendance.all
+    @profile = Profile.find(params[:profile_id])
+    if @profile.card
+       @attendances = @profile.card.attendances
+    else 
+      @attendances = nil
+    end
+    # @attendances= Attendance.all
   end
 
   # GET /attendances/1
