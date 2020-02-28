@@ -26,7 +26,7 @@ class CardsController < ApplicationController
   # POST /cards.json
   def create
     @card = Card.new(card_params)
-    puts "======CARD PARAMS #{card_params}"
+
     respond_to do |format|
       if @card.save
         format.html { redirect_to @card, notice: 'Card was successfully created.' }
@@ -70,6 +70,6 @@ class CardsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def card_params
-      params.require(:card).permit(:card_number, :profile_id)
+      params.require(:card).permit(:opal_number, :profile_id)
     end
 end

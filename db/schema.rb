@@ -10,25 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_28_001811) do
+ActiveRecord::Schema.define(version: 2020_02_28_024656) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "attendances", force: :cascade do |t|
     t.date "date"
-    t.time "checkin"
+    t.time "chekin"
     t.time "checkout"
     t.string "status"
     t.integer "grade"
-    t.bigint "card_number"
+    t.bigint "card_opal_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["card_number"], name: "index_attendances_on_card_number"
+    t.index ["card_opal_number"], name: "index_attendances_on_card_opal_number"
   end
 
-  create_table "cards", force: :cascade do |t|
-    t.string "card_number"
+  create_table "cards", primary_key: "opal_number", force: :cascade do |t|
     t.bigint "profile_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -48,6 +47,6 @@ ActiveRecord::Schema.define(version: 2020_02_28_001811) do
     t.datetime "updated_at", null: false
   end
 
-  add_foreign_key "attendances", "cards", column: "card_number"
+  add_foreign_key "attendances", "cards", column: "card_opal_number", primary_key: "opal_number"
   add_foreign_key "cards", "profiles"
 end
