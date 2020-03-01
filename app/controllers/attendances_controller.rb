@@ -32,7 +32,16 @@ class AttendancesController < ApplicationController
   # POST /attendances
   # POST /attendances.json
   def create
+    # find the card
+
+    # if params date matches todays date then check if the attendance for the card already has a checkin for that date, if not update the checkin data else update checkout data
+    @card = Card.find(attendance_params[:card_opal_number])
     @attendance = Attendance.new(attendance_params)
+    @card.attendances.exists?(:date => Date.today) ? update_checkout(params[:time]) : update_checkin(params[:time])
+    # based on the checkin time calculate the attendance status to be present, absent or late
+    # update status only for checkin not checkout
+    # update_status
+    # if date taken from the card is today's date then set the tap_on status to true. and every subseqquent tap is logged into checkout and not considered for the status
 
     respond_to do |format|
       if @attendance.save
