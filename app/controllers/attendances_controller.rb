@@ -37,7 +37,7 @@ class AttendancesController < ApplicationController
     # if params date matches todays date then check if the attendance for the card already has a checkin for that date, if not update the checkin data else update checkout data
     @card = Card.find(attendance_params[:card_opal_number])
     @attendance = Attendance.new(attendance_params)
-    @card.attendances.exists?(:date => Date.today) ? update_checkout(params[:time]) : update_checkin(params[:time])
+    @card.attendances.exists?(:date => Date.today.to_s) ? update_checkout(params[:time]) : update_checkin(params[:time])
     # based on the checkin time calculate the attendance status to be present, absent or late
     # update status only for checkin not checkout
     # update_status
