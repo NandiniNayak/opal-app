@@ -6,7 +6,7 @@
   <thead>
     <tr>
       <th>Date</th>
-      <th>Chekin</th>
+      <th>Checkin</th>
       <th>Checkout</th>
       <th>Status</th>
       <th>Grade</th>
@@ -20,7 +20,7 @@
       <% @attendances.each do |attendance| %>
         <tr>
           <td><%= attendance.date.strftime("%d,%b-%Y")  if attendance.date %></td>
-          <td><%= attendance.chekin.strftime("%I:%M %P") if attendance.chekin %></td>
+          <td><%= attendance.checkin.strftime("%I:%M %P") if attendance.checkin %></td>
           <td><%= attendance.checkout %></td>
           <td><%= attendance.status %></td>
           <td><%= attendance.grade %></td>

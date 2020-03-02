@@ -34,17 +34,19 @@ class AttendancesController < ApplicationController
   def create
     # find the card
 
-    # if params date matches todays date then check if the attendance for the card already has a checkin for that date, if not update the checkin data else update checkout data
     @card = Card.find(attendance_params[:card_opal_number])
     @attendance = Attendance.new(attendance_params)
-    @card.attendances.exists?(:date => Date.today.to_s) ? self.update_checkout(params[:time]) : self.update_checkin(params[:time])
-    # based on the checkin time calculate the attendance status to be present, absent or late
-    # update status only for checkin not checkout
-    # update_status
-    # if date taken from the card is today's date then set the tap_on status to true. and every subseqquent tap is logged into checkout and not considered for the status
+
+    # update the attendance status for the first checkin of the day, subsequent tap on are logged just for reference as checkout, but not used for determining the attendance status and grade
+    @attendance = @card.attendances.exists?(:date => Date.today.to_s) ? Attendance.update_checkout(params[:time], @attendance) : Attendance.update_checkin(params[:time], @attendance)
 
     respond_to do |format|
       if @attendance.save
+            # Non nil checkin value, implies this is the first tap for the day, check if an entry exists for previous day, if not found update previous days status to absent 
+            if((@attendance.checkin != nil) &&(!@card.attendances.exists?(:date => Date.yesterday.to_s)))
+               Attendance.create(:date => Date.yesterday.to_s, :status =>  "Absent", :card_opal_number => @card.opal_number)
+            end
+
         format.html { redirect_to @attendance, notice: 'Attendance was successfully created.' }
         format.json { render :show, status: :created, location: @attendance }
       else
@@ -86,6 +88,6 @@ class AttendancesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def attendance_params
-      params.require(:attendance).permit(:date, :chekin, :checkout, :status, :grade, :card_opal_number)
+      params.require(:attendance).permit(:date, :checkin, :checkout, :status, :grade, :card_opal_number)
     end
 end
