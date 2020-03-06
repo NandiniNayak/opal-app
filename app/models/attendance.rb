@@ -26,14 +26,16 @@ class Attendance < ApplicationRecord
   end
 
   def calculate_grade
-        # update grade
-    if Attendance.all.count > 0
-      # Note: only 60% of the total attendance is give for late status.
-      late_pct = 0.6 * ((Attendance.where(:status => "Late").count) /  Attendance.all.count.to_f)
-      present_pct = ((Attendance.where(:status => "Present").count) / Attendance.all.count.to_f)
-      grade = (present_pct + late_pct) * 100
+    if self.checkin
+          # update grade
+      if Attendance.all.count > 0
+        # Note: only 60% of the total attendance is give for late status.
+        late_pct = 0.6 * ((Attendance.where(:status => "Late").count) /  Attendance.all.count.to_f)
+        present_pct = ((Attendance.where(:status => "Present").count) / Attendance.all.count.to_f)
+        grade = (present_pct + late_pct) * 100
+      end
+      self.update_columns(grade: grade)
     end
-    self.update_columns(grade: grade)
   end
 
   def update_canvas_grade
