@@ -1,5 +1,6 @@
 class Attendance < ApplicationRecord
   belongs_to :card, foreign_key: 'card_opal_number'
+  after_create :calculate_grade
   after_save :update_canvas_grade
 
   # self keyword lets us access model methods from controller
@@ -15,15 +16,8 @@ class Attendance < ApplicationRecord
     else
       attendance.status = "Absent"
     end
-
-    # update grade
-    if Attendance.all.count > 0
-      # Note: deduct 2% from actual percentage for late status.
-      late_pct = ((Attendance.where(:status => "Late").count) /  Attendance.all.count) - 0.2
-      present_pct = ((Attendance.where(:status => "Present").count) / Attendance.all.count) 
-      attendance.grade = present_pct + late_pct
-    end
     return attendance
+
   end
 
   def self.update_checkout(checkout, attendance)
@@ -31,7 +25,19 @@ class Attendance < ApplicationRecord
     return attendance
   end
 
+  def calculate_grade
+        # update grade
+    if Attendance.all.count > 0
+      # Note: only 60% of the total attendance is give for late status.
+      late_pct = 0.6 * ((Attendance.where(:status => "Late").count) /  Attendance.all.count.to_f)
+      present_pct = ((Attendance.where(:status => "Present").count) / Attendance.all.count.to_f)
+      grade = (present_pct + late_pct) * 100
+    end
+    self.update_columns(grade: grade)
+  end
+
   def update_canvas_grade
+
     # fetch course Id and assignment id from canvas as macros (do not hardcode)
     sis_id = self.card.profile.user["sis_user_id"]
     grade = self.grade
@@ -39,10 +45,7 @@ class Attendance < ApplicationRecord
     payload = {"submission": {"posted_grade": grade }}
 
     if sis_id
-      response = RestClient.put(url, payload,  headers: {
-       "Authorization": Rails.application.credentials.canvas[:authorization_key]
-      })
-      puts "RESPONSE: #{response}"
+      response = HTTParty.put(url, :body => payload.to_json, :headers => { "Content-Type" => 'application/json', "Authorization" => Rails.application.credentials.canvas[:authorization_key]})
     end
 
   end

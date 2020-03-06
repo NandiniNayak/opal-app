@@ -39,11 +39,11 @@ class AttendancesController < ApplicationController
 
     # update the attendance status for the first checkin of the day, subsequent tap on are logged just for reference as checkout, but not used for determining the attendance status and grade
     @attendance = @card.attendances.exists?(:date => Date.today.to_s) ? Attendance.update_checkout(params[:time], @attendance) : Attendance.update_checkin(params[:time], @attendance)
-
+    # test code to check if the grade was updated as expected
+    # @attendance = Attendance.update_checkin(params[:time], @attendance)
     respond_to do |format|
       if @attendance.save
             # Non nil checkin value, implies this is the first tap for the day, check if an entry exists for previous day, if not found update previous days status to absent 
-            puts "ATTENDANCE #{@attendance.inspect}"
             if((@attendance.checkin != nil) &&(!@card.attendances.exists?(:date => Date.yesterday.to_s)))
                Attendance.create(:date => Date.yesterday.to_s, :status =>  "Absent", :card_opal_number => @card.opal_number)
             end
