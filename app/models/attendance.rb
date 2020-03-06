@@ -37,11 +37,9 @@ class Attendance < ApplicationRecord
     grade = self.grade
     url = "https://coderacademy.instructure.com/api/v1/courses/224/assignments/1420/submissions/sis_user_id:#{sis_id}"
     payload = {"submission": {"posted_grade": grade }}
-    # var token =  $('input[name="csrfToken"]').attr('value')
-    # puts "-----TOKEN: #{token}---"
+
     if sis_id
-      response = RestClient.post(url, payload,  headers: {
-        'Content-Type': 'application/json',
+      response = RestClient.put(url, payload,  headers: {
        "Authorization": Rails.application.credentials.canvas[:authorization_key]
       })
       puts "RESPONSE: #{response}"
