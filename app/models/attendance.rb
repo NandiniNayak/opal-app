@@ -15,11 +15,11 @@ class Attendance < ApplicationRecord
     else
       attendance.status = "Absent"
     end
+
     # update grade
     if Attendance.all.count > 0
-      # Note: dedcut 2% from actual percentage for late status.
-
-      late_pct = ((Attendance.where(:status => "Late").count) /  Attendance.all.count)) - 0.2
+      # Note: deduct 2% from actual percentage for late status.
+      late_pct = ((Attendance.where(:status => "Late").count) /  Attendance.all.count) - 0.2
       present_pct = ((Attendance.where(:status => "Present").count) / Attendance.all.count) 
       attendance.grade = present_pct + late_pct
     end
@@ -31,11 +31,22 @@ class Attendance < ApplicationRecord
     return attendance
   end
 
-
   def update_canvas_grade
     # fetch course Id and assignment id from canvas as macros (do not hardcode)
-    https://coderacademy.instructure.com/api/v1/courses/224/assignments/1420/submissions/sis_user_id:#{sis_id}
-    axios.pus()
+    sis_id = self.card.profile.user["sis_user_id"]
+    grade = self.grade
+    url = "https://coderacademy.instructure.com/api/v1/courses/224/assignments/1420/submissions/sis_user_id:#{sis_id}"
+    payload = {"submission": {"posted_grade": grade }}
+    # var token =  $('input[name="csrfToken"]').attr('value')
+    # puts "-----TOKEN: #{token}---"
+    if sis_id
+      response = RestClient.post(url, payload,  headers: {
+        'Content-Type': 'application/json',
+       "Authorization": Rails.application.credentials.canvas[:authorization_key]
+      })
+      puts "RESPONSE: #{response}"
+    end
+
   end
 
 end

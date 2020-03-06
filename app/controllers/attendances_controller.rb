@@ -46,7 +46,6 @@ class AttendancesController < ApplicationController
             if((@attendance.checkin != nil) &&(!@card.attendances.exists?(:date => Date.yesterday.to_s)))
                Attendance.create(:date => Date.yesterday.to_s, :status =>  "Absent", :card_opal_number => @card.opal_number)
             end
-
         format.html { redirect_to @attendance, notice: 'Attendance was successfully created.' }
         format.json { render :show, status: :created, location: @attendance }
       else
