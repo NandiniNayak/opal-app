@@ -9,7 +9,7 @@
       <th>Checkin</th>
       <th>Checkout</th>
       <th>Status</th>
-      <th>Grade</th>
+      <th>Grade(%)</th>
       <th>Card</th>
       <th colspan="3"></th>
     </tr>
@@ -23,7 +23,7 @@
           <td><%= attendance.checkin.strftime("%I:%M %P") if attendance.checkin %></td>
           <td><%= attendance.checkout.strftime("%I:%M %P") if attendance.checkout %></td>
           <td><%= attendance.status %></td>
-          <td><%= attendance.grade %>% <% if attendance.grade%></td>
+          <td><%= attendance.grade if attendance.grade %></td>
           <td><%= attendance.card_opal_number %></td>
           <td><%= link_to 'Show', attendance %></td>
           <td><%= link_to 'Edit', edit_attendance_path(attendance) %></td>
