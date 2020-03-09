@@ -43,9 +43,9 @@ class AttendancesController < ApplicationController
     respond_to do |format|
       if @attendance.save
             # Non nil checkin value, implies this is the first tap for the day, check if an entry exists for previous day, if not found update previous days status to absent 
-            if((@attendance.checkin != nil) &&(!@card.attendances.exists?(:date => Date.yesterday.to_s)))
-               Attendance.create(:date => Date.yesterday.to_s, :status =>  "Absent", :card_opal_number => @card.opal_number)
-            end
+            # if((@attendance.checkin != nil) &&(!@card.attendances.exists?(:date => Date.yesterday.to_s)))
+            #    Attendance.create(:date => Date.yesterday.to_s, :status =>  "Absent", :card_opal_number => @card.opal_number)
+            # end
         format.html { redirect_to @attendance, notice: 'Attendance was successfully created.' }
         format.json { render :show, status: :created, location: @attendance }
       else
