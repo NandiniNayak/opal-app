@@ -69,4 +69,4 @@ class AttendanceStatus
 end
 
 # AttendanceStatus.schedule!
-AttendanceStatus.schedule(run_every: 1.week, run_at: ['monday 2:30:00pm', 'tuesday 2:30pm', 'wednesday 2:30pm'], timezone: 'Sydney')
+AttendanceStatus.schedule(run_every: 1.week, run_at: ['monday 3:00pm', 'tuesday 3:00pm', 'wednesday 3:00pm'], timezone: 'Sydney')
