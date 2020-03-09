@@ -40,6 +40,8 @@ class AttendanceStatus
 =end
 
   def perform
+    puts "======SCHEDULER EXECUTED======"
+    
     start_time = "10:00"
     end_time = "17:00"
 
@@ -68,5 +70,7 @@ class AttendanceStatus
   end
 end
 
+time = 5.minutes.from_now.strftime("%I:%M %P")
+
 # AttendanceStatus.schedule!
-AttendanceStatus.schedule(run_every: 1.week, run_at: ['monday 3:30pm', 'tuesday 3:30pm', 'wednesday 3:30pm'], timezone: 'Sydney')
+AttendanceStatus.schedule(run_every: 1.week, run_at: ['monday ' + time, 'tuesday ' + time, 'wednesday '+ time], timezone: 'Sydney')
