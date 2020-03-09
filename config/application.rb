@@ -35,8 +35,7 @@ module OpalApp
     # default time zone is UTC +10:00
     config.time_zone = "Sydney"
     # config.active_job.queue_adapter = :pg_jobs
-    config.active_job.queue_adapter = :delayed_job
-
+    # config.active_job.queue_adapter = :delayed_job
     config.assets.initialize_on_precompile = false
   end
 end
