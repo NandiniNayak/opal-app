@@ -41,8 +41,8 @@ gem 'uri-ssh_git'
 gem 'rest-client'
 gem 'date'
 gem 'httparty'
-# gem 'delayed_job_active_record'
-# gem 'delayed_job_recurring'
+gem 'delayed_job_active_record'
+gem 'delayed_job_recurring'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
