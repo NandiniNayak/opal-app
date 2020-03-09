@@ -1,10 +1,16 @@
 class AttendanceStatus
   include Delayed::RecurringJob
   # task must be run mon, tue and wednesday for now. Future enhancement. based on the course schedule the task.
-  # run_every 1.day
-  # run_at '05:00PM'
-  # queue 'slow-jobs'
-  # timezone 'Sydney'
+  run_every 1.week
+  time = 1.minutes.from_now.strftime("%k:%M")
+  puts "TIME : #{time}===="
+  # run_at 'monday ' + time
+  run_at 'monday ' + 3.minutes.from_now.strftime("%k:%M")
+  run_at 'tuesday ' + 2.minutes.from_now.strftime("%k:%M")
+  run_at 'wednesday ' + 3.minutes.from_now.strftime("%k:%M")
+  # run_at 'wednesday ' + time
+  queue 'slow-jobs'
+  timezone 'Sydney'
   
   def update_canvas_grade(attendance)
 
@@ -22,15 +28,14 @@ class AttendanceStatus
   def calculate_grade(daily_attendance)
       if Attendance.all.count > 0
         # Note: only 60% of the total attendance is give for late status.
-        late_pct = 0.6 * ((Attendance.where(:status => "Late").count) /  Attendance.all.count.to_f)
-        present_pct = ((Attendance.where(:status => "Present").count) / Attendance.all.count.to_f)
+        late_pct = 0.6 * ((Attendance.where(:status => "Late").count) /  Attendance.all.where.not(checkin: nil).count.to_f)
+        present_pct = ((Attendance.where(:status => "Present").count) /Attendance.all.where.not(checkin: nil).count.to_f)
         grade = (present_pct + late_pct) * 100
       end
-      attendance = daily_attendance.update_columns(grade: grade)
-      if attendance.save
-        # update the grade on canvas for entry made each day
-        update_canvas_grade(attendance)
-      end
+      daily_attendance.update_columns(grade: grade)
+      puts "CALCULATE GRADE #{daily_attendance.inspect}===="
+      # update the grade on canvas for entry made each day
+      update_canvas_grade(daily_attendance)
   end
   
 =begin
@@ -40,23 +45,25 @@ class AttendanceStatus
 =end
 
   def perform
-    puts "======SCHEDULER EXECUTED======"
-    
+    puts "======SCHEDULER EXECUTED====== #{Date.today}"
     start_time = "10:00"
     end_time = "17:00"
 
     Profile.all.each do |profile|
+      if profile.card
         # if (!public_holiday)
           # check if attendance exists for the day
         if profile.card.attendances.exists?(:date => Date.today.to_s)
         #  first entry for the day must be a checkin for the card
           
-         attendance = profile.card.attendances.find_by(:date => Date.today.to_s )
-
-          if attendance.checkin.in_time_zone('Sydney').strftime("%k:%M %p") <= "10:00"
-              attendance.status = "Present"
-          elsif attendance.checkin.in_time_zone('Sydney').strftime("%k:%M %p").between?(start_time, end_time)
-              attendance.status = "Late"
+         attendance = profile.card.attendances.where(:checkout => nil, :date => Date.today.to_s )
+         attendance = attendance[0]
+  
+          if attendance.checkin && (attendance.checkin.in_time_zone('Sydney').strftime("%k:%M") <= start_time)
+              puts "=====CHECKIN TIME #{attendance.checkin.in_time_zone('Sydney').strftime("%k:%M")}======="
+              attendance.update_columns(:status => "Present")
+          elsif attendance.checkin && attendance.checkin.in_time_zone('Sydney').strftime("%k:%M").between?(start_time, end_time)
+              attendance.update_columns(:status => "Late")
           end
         else
           # make an attendance entry for the day, with the status set to absent
@@ -64,13 +71,23 @@ class AttendanceStatus
         end
         # end  # public holiday
         # calculate grade for each day for the first attendance entry, which will always be a checkin
-        daily_attendance = profile.card.attendances.find_by(:date => Date.today.to_s)
-        calculate_grade(daily_attendance)
+        # daily_attendance = profile.card.attendances.find_by(:date => Date.today.to_s)
+        daily_attendance = profile.card.attendances.where(:checkout => nil, :date => Date.today.to_s )
+        puts "=====Daily Attendance #{daily_attendance[0].inspect}======="
+        calculate_grade(daily_attendance[0])
+      end
     end
   end
 end
 
-time = 5.minutes.from_now.strftime("%I:%M %P")
+# to be deployed
+# time = '05:00PM'
 
-# AttendanceStatus.schedule!
-AttendanceStatus.schedule(run_every: 1.week, run_at: ['monday ' + time, 'tuesday ' + time, 'wednesday '+ time], timezone: 'Sydney')
+# just for test purpose
+time = 1.minutes.from_now.strftime("%k:%M")
+
+AttendanceStatus.schedule!
+
+# this doesn't seem to work, for now we are overrding as we have only one instance,
+# future enhancement, resolve why below code doesn't work
+# AttendanceStatus.schedule(run_every: 1.week, run_at: ['monday ' + time, 'tuesday ' + time, 'wednesday '+ time], timezone: 'Sydney')

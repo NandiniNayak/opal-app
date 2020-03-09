@@ -30,8 +30,8 @@ class Attendance < ApplicationRecord
           # update grade
       if Attendance.all.count > 0
         # Note: only 60% of the total attendance is give for late status.
-        late_pct = 0.6 * ((Attendance.where(:status => "Late").count) /  Attendance.all.count.to_f)
-        present_pct = ((Attendance.where(:status => "Present").count) / Attendance.all.count.to_f)
+        late_pct = 0.6 * ((Attendance.where(:status => "Late").count) / Attendance.all.where.not(checkin: nil).count.to_f)
+        present_pct = ((Attendance.where(:status => "Present").count) / Attendance.all.where.not(checkin: nil).count.to_f)
         grade = (present_pct + late_pct) * 100
       end
       self.update_columns(grade: grade)
