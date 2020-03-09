@@ -33,7 +33,6 @@ class AttendancesController < ApplicationController
   # POST /attendances.json
   def create
     # find the card
-
     @card = Card.find(attendance_params[:card_opal_number])
     @attendance = Attendance.new(attendance_params)
 

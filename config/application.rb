@@ -31,5 +31,10 @@ module OpalApp
     config.generators.system_tests = nil
     # clear x-frame options
     config.action_dispatch.default_headers.clear
+
+    # default time zone is UTC +10:00
+    config.time_zone = "Sydney"
+    # config.active_job.queue_adapter = :pg_jobs
+    config.active_job.queue_adapter = :delayed_job
   end
 end
