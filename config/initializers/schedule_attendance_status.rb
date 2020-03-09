@@ -1,17 +1,17 @@
 class AttendanceStatus
   include Delayed::RecurringJob
   # task must be run mon, tue and wednesday for now. Future enhancement. based on the course schedule the task.
-  run_every 1.week
-  time = 1.minutes.from_now.strftime("%k:%M")
-  puts "TIME : #{time}===="
-  # run_at 'monday ' + time
-  run_at 'monday ' + 3.minutes.from_now.strftime("%k:%M")
-  run_at 'tuesday ' + 2.minutes.from_now.strftime("%k:%M")
-  run_at 'wednesday ' + 3.minutes.from_now.strftime("%k:%M")
-  # run_at 'wednesday ' + time
-  queue 'slow-jobs'
-  timezone 'Sydney'
-  
+  # run_every 1.week
+  # time = 1.minutes.from_now.strftime("%k:%M")
+  # puts "TIME : #{time}===="
+  # # run_at 'monday ' + time
+  # run_at 'monday ' + 2.minutes.from_now.strftime("%k:%M")
+  # run_at 'tuesday ' + time
+  # run_at 'wednesday ' + 3.minutes.from_now.strftime("%k:%M")
+  # # run_at 'wednesday ' + time
+  # queue 'slow-jobs'
+  # timezone 'Sydney'
+
   def update_canvas_grade(attendance)
 
     # NOTE: fetch course Id and assignment id from canvas as macros (do not hardcode)
@@ -86,8 +86,4 @@ end
 # just for test purpose
 time = 1.minutes.from_now.strftime("%k:%M")
 
-AttendanceStatus.schedule!
-
-# this doesn't seem to work, for now we are overrding as we have only one instance,
-# future enhancement, resolve why below code doesn't work
-# AttendanceStatus.schedule(run_every: 1.week, run_at: ['monday ' + time, 'tuesday ' + time, 'wednesday '+ time], timezone: 'Sydney')
+AttendanceStatus.schedule(run_every: 1.week, run_at: ['monday ' + time, 'tuesday ' + time, 'wednesday '+ time], timezone: 'Sydney')
