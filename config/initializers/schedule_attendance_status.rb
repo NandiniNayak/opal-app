@@ -81,7 +81,7 @@ class AttendanceStatus
 end
 
 # to be deployed
-# time = '05:00PM'
+time = '19:00'
 
 # just for test purpose
 time = 1.minutes.from_now.strftime("%k:%M")
