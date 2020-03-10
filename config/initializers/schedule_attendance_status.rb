@@ -33,7 +33,6 @@ class AttendanceStatus
         grade = (present_pct + late_pct) * 100
       end
       daily_attendance.update_columns(grade: grade)
-      puts "CALCULATE GRADE #{daily_attendance.inspect}===="
       # update the grade on canvas for entry made each day
       update_canvas_grade(daily_attendance)
   end
@@ -45,7 +44,6 @@ class AttendanceStatus
 =end
 
   def perform
-    puts "======SCHEDULER EXECUTED====== #{Date.today}"
     start_time = "10:00"
     end_time = "17:00"
 
@@ -60,7 +58,6 @@ class AttendanceStatus
          attendance = attendance[0]
   
           if attendance.checkin && (attendance.checkin.in_time_zone('Sydney').strftime("%k:%M") <= start_time)
-              puts "=====CHECKIN TIME #{attendance.checkin.in_time_zone('Sydney').strftime("%k:%M")}======="
               attendance.update_columns(:status => "Present")
           elsif attendance.checkin && attendance.checkin.in_time_zone('Sydney').strftime("%k:%M").between?(start_time, end_time)
               attendance.update_columns(:status => "Late")
@@ -73,7 +70,6 @@ class AttendanceStatus
         # calculate grade for each day for the first attendance entry, which will always be a checkin
         # daily_attendance = profile.card.attendances.find_by(:date => Date.today.to_s)
         daily_attendance = profile.card.attendances.where(:checkout => nil, :date => Date.today.to_s )
-        puts "=====Daily Attendance #{daily_attendance[0].inspect}======="
         calculate_grade(daily_attendance[0])
       end
     end
