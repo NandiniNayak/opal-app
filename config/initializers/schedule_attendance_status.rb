@@ -84,6 +84,6 @@ end
 time = '19:00'
 
 # just for test purpose
-time = 1.minutes.from_now.strftime("%k:%M")
+# time = 1.minutes.from_now.strftime("%k:%M")
 
 AttendanceStatus.schedule(run_every: 1.week, run_at: ['monday ' + time, 'tuesday ' + time, 'wednesday '+ time], timezone: 'Sydney')
