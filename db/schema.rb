@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_09_034654) do
+ActiveRecord::Schema.define(version: 2020_03_10_235423) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,6 +38,9 @@ ActiveRecord::Schema.define(version: 2020_03_09_034654) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "course_number"
+    t.date "start_date"
+    t.date "end_date"
   end
 
   create_table "delayed_jobs", force: :cascade do |t|
@@ -60,8 +63,11 @@ ActiveRecord::Schema.define(version: 2020_03_09_034654) do
     t.string "role"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "course_id"
+    t.index ["course_id"], name: "index_profiles_on_course_id"
   end
 
   add_foreign_key "attendances", "cards", column: "card_opal_number", primary_key: "opal_number"
   add_foreign_key "cards", "profiles"
+  add_foreign_key "profiles", "courses"
 end
