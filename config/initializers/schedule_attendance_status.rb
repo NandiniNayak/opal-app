@@ -64,8 +64,11 @@ class AttendanceStatusLatest
                             end
                             # check if grade is already updated for the day : this will either return 1 entry or none, as grade gets updated with checkin or absent
                             if profile.card && profile.card.attendances.where(:date => each_day.to_s).where.not(grade: nil).empty?
-                                daily_attendance = profile.card.attendances.where(:date => each_day.to_s ).where.not(checkin: nil) if profile.card
-                                calculate_grade(daily_attendance[0], profile, course) if !daily_attendance.empty?
+                                # calculate grade for only the entries that has checkin value or absent status
+                                daily_attendance = profile.card && (profile.card.attendances.where(:date => each_day.to_s ).where.not(checkin: nil) | profile.card.attendances.where(:date => each_day.to_s, :status => "Absent"))
+                                daily_attendance && daily_attendance.each do |attendance|
+                                    calculate_grade(attendance, profile, course)
+                                end
                             end
                         end
                     end
