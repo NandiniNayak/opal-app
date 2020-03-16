@@ -21,7 +21,6 @@
         <tr>
           <td><%= attendance.date.strftime("%d,%b-%Y")  if attendance.date %></td>
           <td><%= attendance.checkin.strftime("%I:%M %P") if attendance.checkin %></td>
-          <%# <td><%= attendance.checkout.strftime("%I:%M %P") if attendance.checkout %></td> %>
           <td><%= attendance.status %></td>
           <td><%= attendance.grade if attendance.grade %></td>
           <td><%= attendance.card_opal_number %></td>
