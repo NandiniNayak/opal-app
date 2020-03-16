@@ -18,6 +18,12 @@ class AttendancesController < ApplicationController
   # GET /attendances/1
   # GET /attendances/1.json
   def show
+    @profile = Profile.find(params[:profile_id])
+    if @profile.card
+       @attendances = @profile.card.attendances.where.not(checkout: nil)
+    else 
+      @attendances = nil
+    end
   end
 
   # GET /attendances/new
