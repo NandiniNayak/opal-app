@@ -19,6 +19,7 @@ class AttendancesController < ApplicationController
   # GET /attendances/1.json
   def show
     @profile = Profile.find(params[:profile_id])
+    puts "PROFILE #{@profile.inspect}"
     if @profile.card
        @attendances = @profile.card.attendances.where.not(checkout: nil)
     else 

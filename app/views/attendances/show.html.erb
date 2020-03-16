@@ -13,7 +13,7 @@
 
   <tbody>
     <% if @attendances %>
-      <% @attendances.where.not(checkin: nil).each do |attendance| %>
+      <% @attendances.each do |attendance| %>
         <tr>
           <td><%= attendance.date.strftime("%d,%b-%Y")  if attendance.date %></td>
           <td><%= attendance.checkout.strftime("%I:%M %P") if attendance.checkout %></td>
