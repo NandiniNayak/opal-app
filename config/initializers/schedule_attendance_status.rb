@@ -15,17 +15,18 @@ class AttendanceStatusLatest
     end
 
     def calculate_grade(daily_attendance, profile, course)
-        # if attendance for the course exists
-      if profile.card && profile.card.attendances.exists?
-        # Note: only 60% of the total attendance is give for late status.
-        total_count = profile.card.attendances.where.not(checkin: nil).count + profile.card.attendances.where(status: "Absent").count
-        late_pct = 0.6 * ((profile.card.attendances.where(:status => "Late").count) / total_count.to_f)
-        present_pct = ((profile.card.attendances.where(:status => "Present").count) / total_count.to_f)
-        grade = (present_pct + late_pct) * 100
-      end
-      daily_attendance.update_columns(grade: grade)
-      # update the grade on canvas for entry made each day
-      update_canvas_grade(daily_attendance, course)
+            # if attendance for the course exists
+        if profile.card && profile.card.attendances.exists?
+            # Note: only 60% of the total attendance is give for late status.
+            # BUG: count only if the checkin was on a mon, tue or wednesday. ignore the checkin on other days
+            total_count = profile.card.attendances.where.not(checkin: nil).count + profile.card.attendances.where(status: "Absent").count
+            late_pct = 0.6 * ((profile.card.attendances.where(:status => "Late").count) / total_count.to_f)
+            present_pct = ((profile.card.attendances.where(:status => "Present").count) / total_count.to_f)
+            grade = (present_pct + late_pct) * 100
+        end
+        daily_attendance.update_columns(grade: grade)
+        # update the grade on canvas for entry made each day
+        update_canvas_grade(daily_attendance, course)
     end
 
     def perform
@@ -44,25 +45,11 @@ class AttendanceStatusLatest
                     # FUTURE UPDATE: Also include a check to see if its not a public holiday
                     if((each_day.strftime("%a") == "Mon" ) || (each_day.strftime("%a") == "Tue" ) || (each_day.strftime("%a") == "Wed" ))
                         course.profiles && course.profiles.each do |profile|
-                                # if an attendance exists for each day
-                            if profile.card && profile.card.attendances.exists?(:date => each_day.to_s)
-                                # check if the status is already updated for the day
-                                if profile.card  && profile.card.attendances.where(:date => each_day.to_s).where.not(status: nil).empty?
-                                    # find the checkin entry who status is still not updated for the day
-                                    attendance = profile.card.attendances.where(:date => each_day.to_s).where.not(checkin: nil)[0] if profile.card
-                                    
-                                    if attendance && attendance.checkin && (attendance.checkin.in_time_zone('Sydney').strftime("%k:%M") <= start_time)
-                                        attendance.update_columns(:status => "Present")
-                                    elsif attendance && attendance.checkin && attendance.checkin.in_time_zone('Sydney').strftime("%k:%M").between?(start_time, end_time)
-                                        attendance.update_columns(:status => "Late")
-                                    end
-
-                                end
-                            else
-                                # make an entry for that day with status set to absent
+                            # if no entry found for a specific day and if that day was mon, tue or wed mark absent
+                            if profile.card && profile.card.attendances.where(:date => each_day.to_s).empty? 
                                 profile.card && profile.card.attendances.create(:date => each_day.to_s, :status => "Absent")
                             end
-                            # check if grade is already updated for the day : this will either return 1 entry or none, as grade gets updated with checkin or absent
+                            # check if grade is already updated for the day : this will either return 1 entry or none, as grade gets updated each day
                             if profile.card && profile.card.attendances.where(:date => each_day.to_s).where.not(grade: nil).empty?
                                 # calculate grade for only the entries that has checkin value or absent status
                                 daily_attendance = profile.card && (profile.card.attendances.where(:date => each_day.to_s ).where.not(checkin: nil) | profile.card.attendances.where(:date => each_day.to_s, :status => "Absent"))
@@ -78,10 +65,11 @@ class AttendanceStatusLatest
     end
 end
 
-  # to be deployed
+# to be deployed
 # time = '19:00'
 
 # just for test purpose
 time = 1.minutes.from_now.strftime("%k:%M")
 
-AttendanceStatusLatest.schedule(run_every: 1.week, run_at: ['monday ' + time, 'tuesday ' + time, 'wednesday '+ time], timezone: 'Sydney')
+# AttendanceStatusLatest.schedule(run_every: 1.week, run_at: ['monday ' + time, 'tuesday ' + time, 'wednesday '+ time], timezone: 'Sydney')
+AttendanceStatusLatest.schedule(run_every: 1.week, run_at: time, timezone: 'Sydney')

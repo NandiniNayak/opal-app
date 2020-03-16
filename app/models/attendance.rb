@@ -5,19 +5,16 @@ class Attendance < ApplicationRecord
 
   # self keyword lets us access model methods from controller
   def self.update_checkin(checkin, attendance)
-    # start_time = "10:00"
-    # end_time = "17:00"
+    start_time = "10:00"
+    end_time = "17:00"
 
     attendance.checkin = checkin
-    # if checkin.in_time_zone('Sydney').strftime("%k:%M %p") <= "10:00"
-    #   attendance.status = "Present"
-    # elsif checkin.in_time_zone('Sydney').strftime("%k:%M %p").between?(start_time, end_time)
-    #   attendance.status = "Late"
-    # else
-    #   attendance.status = "Absent"
-    # end
+    if checkin.in_time_zone('Sydney').strftime("%k:%M %p") <= "10:00"
+      attendance.status = "Present"
+    elsif checkin.in_time_zone('Sydney').strftime("%k:%M %p").between?(start_time, end_time)
+      attendance.status = "Late"
+    end
     return attendance
-
   end
 
   def self.update_checkout(checkout, attendance)
