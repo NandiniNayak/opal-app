@@ -16,7 +16,7 @@
 
   <tbody>
    <% if @attendances %>
-      <% @attendances.where.not(checkin: nil).each do |attendance| %>
+      <% @attendances.where.not(status: nil).each do |attendance| %>
         <tr>
           <td><%= attendance.date.strftime("%d,%b-%Y")  if attendance.date %></td>
           <td><%= attendance.checkin.strftime("%I:%M %P") if attendance.checkin %></td>
