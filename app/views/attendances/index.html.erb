@@ -23,7 +23,7 @@
           <td><%= attendance.status %></td>
           <td><%= attendance.grade if attendance.grade %></td>
           <td><%= attendance.card_opal_number %></td>
-          <td><%= link_to 'Show', attendance_path(:profile_id => @profile.id) %></td>
+          <td><%= link_to 'Show', attendance_path(:id => attendance.id, :profile_id => @profile.id) %></td>
           <td><%= link_to 'Edit', edit_attendance_path(attendance) %></td>
           <td><%= link_to 'Destroy', attendance, method: :delete, data: { confirm: 'Are you sure?' } %></td>
         </tr>
