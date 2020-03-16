@@ -18,6 +18,7 @@ class Attendance < ApplicationRecord
   end
 
   def self.update_checkout(checkout, attendance)
+    puts "UPDATED CHECKOUT====="
     attendance.checkout = checkout
     return attendance
   end
